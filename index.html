@@ -18,7 +18,12 @@
 
   *{ margin:0; padding:0; box-sizing:border-box; }
 
-  html{ scroll-behavior:smooth; }
+  html{
+    scroll-behavior:smooth;
+    scrollbar-width:none;       /* Firefox */
+    -ms-overflow-style:none;    /* 구형 Edge/IE */
+  }
+  html::-webkit-scrollbar{ display:none; } /* Chrome/Safari */
 
   body{
     font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;
@@ -75,14 +80,10 @@
     overflow:hidden;
     height:100%;
   }
-  .hero__video video,
-  .hero__video .fallback{
+  .hero__video video{
     position:absolute; inset:0;
     width:100%; height:100%;
     object-fit:cover;
-  }
-  .fallback{
-    background:linear-gradient(160deg,#dcd2f5,#b7a3e6 55%,#9481d8);
   }
 
   /* ---------- 텍스트 레이어: 영상보다 위, 오른쪽으로 자연스럽게 겹침 ---------- */
@@ -128,7 +129,6 @@
   .projects{
     background:var(--body-bg);
     padding:130px 0 120px;
-    perspective:1400px;
   }
   .projects__head{
     max-width:1200px; margin:0 auto 56px;
@@ -161,6 +161,7 @@
     scrollbar-width:none;
     cursor:grab;
     user-select:none;
+    perspective:1200px;
   }
   .projects__track.dragging{ cursor:grabbing; }
   .projects__track::-webkit-scrollbar{ display:none; }
@@ -172,19 +173,27 @@
     overflow:visible;
     opacity:0;
     transform:translateY(28px);
+    transition:opacity .7s cubic-bezier(.2,.8,.2,1), transform .35s ease;
     will-change:transform;
+    transform-style:preserve-3d;
   }
-  .project-card.in-view{ animation:cardIn .7s cubic-bezier(.2,.8,.2,1) forwards; }
-  @keyframes cardIn{ to{ opacity:1; } }
+  .project-card.in-view{
+    opacity:1;
+    transform:translateY(0);
+  }
 
   .project-card__inner{
     border-radius:24px;
     overflow:hidden;
     background:var(--white);
     pointer-events:none;
+    height:100%;
+    display:flex;
+    flex-direction:column;
   }
   .project-card__media{
     height:190px;
+    flex:0 0 190px;
     position:relative;
     overflow:hidden;
   }
@@ -206,7 +215,12 @@
   .ribbon--planning{ background:#8a8698; }
   .ribbon--upcoming{ background:#d99a4e; }
 
-  .project-card__body{ padding:26px 26px 30px; }
+  .project-card__body{
+    padding:26px 26px 30px;
+    flex:1 1 auto;
+    display:flex;
+    flex-direction:column;
+  }
   .project-card__title{
     font-size:19px; font-weight:800; letter-spacing:-0.01em;
     margin-bottom:10px;
@@ -215,17 +229,17 @@
     font-size:14px; line-height:1.7; color:var(--ink-soft);
     margin-bottom:18px;
   }
-  .project-card__tags{ display:flex; gap:8px; flex-wrap:wrap; }
+  .project-card__tags{ display:flex; gap:8px; flex-wrap:wrap; margin-top:auto; }
   .project-card__tag{
     font-size:11.5px; font-weight:600; color:var(--lilac-deep);
     background:#efeaf9; padding:5px 10px; border-radius:100px;
   }
 
-  .p1 .project-card__media{ background:linear-gradient(150deg,#f0c9d8,#e39ab8); }
-  .p2 .project-card__media{ background:linear-gradient(150deg,#c9e0f0,#8fbfe6); }
-  .p3 .project-card__media{ background:linear-gradient(150deg,#dcd2f5,#a892e0); }
-  .p4 .project-card__media{ background:linear-gradient(150deg,#cdeee0,#89d1b4); }
-  .p5 .project-card__media{ background:linear-gradient(150deg,#f5e2c2,#eabd7a); }
+  .p1 .project-card__media{ background:#dcdcdc url('assets/Project_1.jpg') center/cover no-repeat; }
+  .p2 .project-card__media{ background:#dcdcdc url('assets/Project_2.jpg') center/cover no-repeat; }
+  .p3 .project-card__media{ background:#dcdcdc url('assets/Project_3.jpg') center/cover no-repeat; }
+  .p4 .project-card__media{ background:#dcdcdc url('assets/Project_4.jpg') center/cover no-repeat; }
+  .p5 .project-card__media{ background:#dcdcdc url('assets/Project_5.jpg') center/cover no-repeat; }
 
   /* ---------- 상세 모달 ---------- */
   .modal{
@@ -246,16 +260,16 @@
     transition:transform .35s cubic-bezier(.2,.8,.2,1);
   }
   .modal.open .modal__panel{ transform:scale(1) translateY(0); }
-  .modal__media{ height:280px; position:relative; }
+  .modal__media{ aspect-ratio:2 / 1; height:auto; position:relative; }
   .modal__close{
     position:absolute; top:18px; right:18px; z-index:5;
     width:36px; height:36px; border-radius:50%; border:none;
     background:rgba(255,255,255,0.9); color:var(--ink);
     font-size:16px; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
-    transition:transform .2s ease;
+    transition:background .2s ease, color .2s ease;
   }
-  .modal__close:hover{ transform:rotate(90deg); }
+  .modal__close:hover{ background:var(--lilac-deep); color:var(--white); }
   .modal__body{ padding:34px 34px 38px; }
   .modal__title{ font-size:24px; font-weight:800; letter-spacing:-0.01em; margin-bottom:14px; }
   .modal__desc{ font-size:15px; line-height:1.8; color:var(--ink-soft); margin-bottom:22px; }
@@ -300,7 +314,6 @@
 
     <div class="hero__bg"></div>
     <div class="hero__video">
-      <div class="fallback" id="videoFallback"></div>
       <video id="heroVideo" autoplay muted loop playsinline preload="auto">
         <source src="assets/project-preview.mp4" type="video/mp4">
       </video>
@@ -414,19 +427,23 @@
   </div>
 
   <script>
-    // 영상 0.5배속 재생
     const heroVideo = document.getElementById('heroVideo');
     if (heroVideo) {
-      const setSlow = () => { heroVideo.playbackRate = 0.5; };
-      heroVideo.addEventListener('loadedmetadata', setSlow);
       heroVideo.addEventListener('error', () => { heroVideo.style.display = 'none'; });
-      setSlow();
     }
 
     const track = document.getElementById('track');
     const cards = Array.from(track.querySelectorAll('.project-card'));
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
+
+    // 기본 스크롤 위치를 카드 중간쯤으로 지정 (처음부터 1번 카드가 딱 붙어 보이지 않게)
+    function setDefaultScroll(){
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      track.scrollLeft = maxScroll / 2;
+    }
+    setDefaultScroll();
+    window.addEventListener('load', setDefaultScroll);
 
     // 화살표로 카드 넘기기
     const scrollByCard = (dir) => {
@@ -438,43 +455,47 @@
     prevBtn.addEventListener('click', () => scrollByCard(-1));
     nextBtn.addEventListener('click', () => scrollByCard(1));
 
-    // 3D 코스플로우 효과: 스크롤 위치에 따라 카드가 부드럽게 회전/스케일
-    function updateCardTransforms(){
-      const rect = track.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      cards.forEach(card => {
-        const cardRect = card.getBoundingClientRect();
-        const cardCenter = cardRect.left + cardRect.width / 2;
-        const dist = (cardCenter - centerX) / rect.width;
-        const clamped = Math.max(-1, Math.min(1, dist));
-        const angle = clamped * 26;
-        const scale = 1 - Math.abs(clamped) * 0.12;
-        const opacity = 1 - Math.abs(clamped) * 0.3;
-        const z = -Math.abs(clamped) * 80;
-        card.style.transform = `perspective(1400px) rotateY(${-angle}deg) scale(${scale}) translateZ(${z}px)`;
-        card.style.opacity = opacity;
-      });
-    }
-    track.addEventListener('scroll', () => requestAnimationFrame(updateCardTransforms));
-    window.addEventListener('resize', updateCardTransforms);
-
-    // 마우스 드래그로 카드 넘기기
+    // 마우스 드래그로 카드 넘기기 (관성으로 부드럽게 슬라이드)
     let isDown = false, startX = 0, startScroll = 0, moved = false;
+    let velocity = 0, lastX = 0, lastT = 0, momentumId = null;
+
+    const stopMomentum = () => {
+      if (momentumId) cancelAnimationFrame(momentumId);
+      momentumId = null;
+    };
+
     track.addEventListener('mousedown', (e) => {
       isDown = true; moved = false;
       startX = e.pageX;
       startScroll = track.scrollLeft;
+      lastX = e.pageX;
+      lastT = performance.now();
+      velocity = 0;
+      stopMomentum();
       track.classList.add('dragging');
     });
     window.addEventListener('mouseup', () => {
+      if (!isDown) return;
       isDown = false;
       track.classList.remove('dragging');
+      const glide = () => {
+        if (Math.abs(velocity) < 0.5) { momentumId = null; return; }
+        track.scrollLeft -= velocity;
+        velocity *= 0.94;
+        momentumId = requestAnimationFrame(glide);
+      };
+      momentumId = requestAnimationFrame(glide);
     });
     window.addEventListener('mousemove', (e) => {
       if (!isDown) return;
+      const now = performance.now();
       const delta = e.pageX - startX;
       if (Math.abs(delta) > 6) moved = true;
       track.scrollLeft = startScroll - delta;
+      const dt = now - lastT || 16;
+      velocity = ((e.pageX - lastX) / dt) * 16;
+      lastX = e.pageX;
+      lastT = now;
     });
 
     // 카드 클릭 시 상세 모달 (드래그였다면 무시)
@@ -506,23 +527,34 @@
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-    // 스크롤 인뷰 애니메이션
-    const revealTargets = [document.querySelector('.projects__head'), ...cards];
+    // 카드 3D 틸트 효과 (마우스 위치 따라 살짝 입체적으로 기울어짐)
+    cards.forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width;
+        const py = (e.clientY - rect.top) / rect.height;
+        const rotateY = (px - 0.5) * 16;
+        const rotateX = (0.5 - py) * 14;
+        card.style.transform = `translateY(0) perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.04)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+
+    // 스크롤 인뷰 애니메이션 (프로젝트 섹션이 한 번에 같이 로딩/재생)
+    const projectsSection = document.getElementById('projects');
+    const projectsHead = document.querySelector('.projects__head');
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const el = entry.target;
-          const delay = el.classList.contains('project-card')
-            ? cards.indexOf(el) * 90
-            : 0;
-          setTimeout(() => el.classList.add('in-view'), delay);
-          io.unobserve(el);
+          projectsHead.classList.add('in-view');
+          cards.forEach((card) => card.classList.add('in-view'));
+          io.unobserve(entry.target);
         }
       });
     }, { threshold: 0.2 });
-    revealTargets.forEach((el) => el && io.observe(el));
-
-    updateCardTransforms();
+    io.observe(projectsSection);
   </script>
 
 </body>
