@@ -8,7 +8,7 @@
   href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
 <style>
   :root{
-    --body-bg:#efefef;      /* 요청하신 본문 배경색 (그라디언트 없음) *
+    --body-bg:#efefef;      /* 요청하신 본문 배경색 (그라디언트 없음) */
     --ink:#2a2733;
     --ink-soft:#68657a;
     --lilac:#8c7bd6;
@@ -427,134 +427,174 @@
   </div>
 
   <script>
-    const heroVideo = document.getElementById('heroVideo');
-    if (heroVideo) {
-      heroVideo.addEventListener('error', () => { heroVideo.style.display = 'none'; });
-    }
-
-    const track = document.getElementById('track');
-    const cards = Array.from(track.querySelectorAll('.project-card'));
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
-    // 기본 스크롤 위치를 카드 중간쯤으로 지정 (처음부터 1번 카드가 딱 붙어 보이지 않게)
-    function setDefaultScroll(){
-      const maxScroll = track.scrollWidth - track.clientWidth;
-      track.scrollLeft = maxScroll / 2;
-    }
-    setDefaultScroll();
-    window.addEventListener('load', setDefaultScroll);
-
-    // 화살표로 카드 넘기기
-    const scrollByCard = (dir) => {
-      const card = track.querySelector('.project-card');
-      const gap = 36;
-      const distance = (card ? card.getBoundingClientRect().width : 320) + gap;
-      track.scrollBy({ left: dir * distance, behavior: 'smooth' });
-    };
-    prevBtn.addEventListener('click', () => scrollByCard(-1));
-    nextBtn.addEventListener('click', () => scrollByCard(1));
-
-    // 마우스 드래그로 카드 넘기기 (관성으로 부드럽게 슬라이드)
-    let isDown = false, startX = 0, startScroll = 0, moved = false;
-    let velocity = 0, lastX = 0, lastT = 0, momentumId = null;
-
-    const stopMomentum = () => {
-      if (momentumId) cancelAnimationFrame(momentumId);
-      momentumId = null;
-    };
-
-    track.addEventListener('mousedown', (e) => {
-      isDown = true; moved = false;
-      startX = e.pageX;
-      startScroll = track.scrollLeft;
-      lastX = e.pageX;
-      lastT = performance.now();
-      velocity = 0;
-      stopMomentum();
-      track.classList.add('dragging');
-    });
-    window.addEventListener('mouseup', () => {
-      if (!isDown) return;
-      isDown = false;
-      track.classList.remove('dragging');
-      const glide = () => {
-        if (Math.abs(velocity) < 0.5) { momentumId = null; return; }
-        track.scrollLeft -= velocity;
-        velocity *= 0.94;
-        momentumId = requestAnimationFrame(glide);
-      };
-      momentumId = requestAnimationFrame(glide);
-    });
-    window.addEventListener('mousemove', (e) => {
-      if (!isDown) return;
-      const now = performance.now();
-      const delta = e.pageX - startX;
-      if (Math.abs(delta) > 6) moved = true;
-      track.scrollLeft = startScroll - delta;
-      const dt = now - lastT || 16;
-      velocity = ((e.pageX - lastX) / dt) * 16;
-      lastX = e.pageX;
-      lastT = now;
-    });
-
-    // 카드 클릭 시 상세 모달 (드래그였다면 무시)
-    const modal = document.getElementById('modal');
-    const modalMedia = document.getElementById('modalMedia');
-    const modalRibbon = document.getElementById('modalRibbon');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDesc = document.getElementById('modalDesc');
-    const modalTags = document.getElementById('modalTags');
-    const modalClose = document.getElementById('modalClose');
-
-    const ribbonClass = { active:'ribbon--active', beta:'ribbon--beta', planning:'ribbon--planning', upcoming:'ribbon--upcoming' };
-
-    cards.forEach((card) => {
-      card.addEventListener('click', () => {
-        if (moved) return;
-        const mediaEl = card.querySelector('.project-card__media');
-        modalMedia.style.background = getComputedStyle(mediaEl).backgroundImage;
-        modalRibbon.className = 'project-card__ribbon ' + ribbonClass[card.dataset.ribbon];
-        modalRibbon.textContent = card.dataset.status;
-        modalTitle.textContent = card.dataset.title;
-        modalDesc.textContent = card.dataset.desc;
-        modalTags.innerHTML = card.dataset.tags.split(',').map(t => `<span class="modal__tag">${t}</span>`).join('');
-        modal.classList.add('open');
-      });
-    });
-    const closeModal = () => modal.classList.remove('open');
-    modalClose.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-
-    // 카드 3D 틸트 효과 (마우스 위치 따라 살짝 입체적으로 기울어짐)
-    cards.forEach((card) => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const px = (e.clientX - rect.left) / rect.width;
-        const py = (e.clientY - rect.top) / rect.height;
-        const rotateY = (px - 0.5) * 16;
-        const rotateX = (0.5 - py) * 14;
-        card.style.transform = `translateY(0) perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.04)`;
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
-      });
-    });
-
-    // 스크롤 인뷰 애니메이션 (프로젝트 섹션이 한 번에 같이 로딩/재생)
-    const projectsSection = document.getElementById('projects');
-    const projectsHead = document.querySelector('.projects__head');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          projectsHead.classList.add('in-view');
-          cards.forEach((card) => card.classList.add('in-view'));
-          io.unobserve(entry.target);
+    // ---------------------------------------------------------------
+    // 0) 노출(reveal) 로직을 가장 먼저, 독립적으로 실행.
+    //    아래쪽 캐러셀/모달 코드에서 에러가 나더라도
+    //    카드/리본/버튼이 투명한 채로 남지 않도록 안전장치를 둠.
+    // ---------------------------------------------------------------
+    (function revealSection(){
+      try {
+        const projectsSection = document.getElementById('projects');
+        const projectsHead = document.querySelector('.projects__head');
+        const cardEls = Array.from(document.querySelectorAll('.project-card'));
+        const showAll = () => {
+          if (projectsHead) projectsHead.classList.add('in-view');
+          cardEls.forEach((card) => card.classList.add('in-view'));
+        };
+        if (projectsSection && 'IntersectionObserver' in window) {
+          const io = new IntersectionObserver((entries, obs) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                showAll();
+                obs.disconnect();
+              }
+            });
+          }, { threshold: 0.2 });
+          io.observe(projectsSection);
+        } else {
+          showAll();
         }
-      });
-    }, { threshold: 0.2 });
-    io.observe(projectsSection);
+        // 안전장치: 무슨 이유로든 위 로직이 발동하지 않으면 2초 뒤 강제로 노출
+        setTimeout(showAll, 2000);
+      } catch (err) {
+        // 노출 로직이 깨져도 최소한 화면엔 보이도록 강제 처리
+        document.querySelectorAll('.projects__head, .project-card').forEach((el) => el.classList.add('in-view'));
+        console.error('reveal error:', err);
+      }
+    })();
+
+    // ---------------------------------------------------------------
+    // 1) 히어로 영상
+    // ---------------------------------------------------------------
+    try {
+      const heroVideo = document.getElementById('heroVideo');
+      if (heroVideo) {
+        heroVideo.addEventListener('error', () => { heroVideo.style.display = 'none'; });
+      }
+    } catch (err) { console.error('hero video error:', err); }
+
+    // ---------------------------------------------------------------
+    // 2) 프로젝트 캐러셀 (화살표, 드래그, 3D 틸트)
+    // ---------------------------------------------------------------
+    try {
+      const track = document.getElementById('track');
+      const cards = track ? Array.from(track.querySelectorAll('.project-card')) : [];
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      if (track && cards.length) {
+        // 기본 스크롤 위치를 카드 중간쯤으로 지정
+        function setDefaultScroll(){
+          const maxScroll = track.scrollWidth - track.clientWidth;
+          track.scrollLeft = maxScroll / 2;
+        }
+        setDefaultScroll();
+        window.addEventListener('load', setDefaultScroll);
+
+        // 화살표로 카드 넘기기
+        const scrollByCard = (dir) => {
+          const card = track.querySelector('.project-card');
+          const gap = 36;
+          const distance = (card ? card.getBoundingClientRect().width : 320) + gap;
+          track.scrollBy({ left: dir * distance, behavior: 'smooth' });
+        };
+        if (prevBtn) prevBtn.addEventListener('click', () => scrollByCard(-1));
+        if (nextBtn) nextBtn.addEventListener('click', () => scrollByCard(1));
+
+        // 마우스 드래그로 카드 넘기기 (관성으로 부드럽게 슬라이드)
+        let isDown = false, startX = 0, startScroll = 0, moved = false;
+        let velocity = 0, lastX = 0, lastT = 0, momentumId = null;
+
+        const stopMomentum = () => {
+          if (momentumId) cancelAnimationFrame(momentumId);
+          momentumId = null;
+        };
+
+        track.addEventListener('mousedown', (e) => {
+          isDown = true; moved = false;
+          startX = e.pageX;
+          startScroll = track.scrollLeft;
+          lastX = e.pageX;
+          lastT = performance.now();
+          velocity = 0;
+          stopMomentum();
+          track.classList.add('dragging');
+        });
+        window.addEventListener('mouseup', () => {
+          if (!isDown) return;
+          isDown = false;
+          track.classList.remove('dragging');
+          const glide = () => {
+            if (Math.abs(velocity) < 0.5) { momentumId = null; return; }
+            track.scrollLeft -= velocity;
+            velocity *= 0.94;
+            momentumId = requestAnimationFrame(glide);
+          };
+          momentumId = requestAnimationFrame(glide);
+        });
+        window.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          const now = performance.now();
+          const delta = e.pageX - startX;
+          if (Math.abs(delta) > 6) moved = true;
+          track.scrollLeft = startScroll - delta;
+          const dt = now - lastT || 16;
+          velocity = ((e.pageX - lastX) / dt) * 16;
+          lastX = e.pageX;
+          lastT = now;
+        });
+
+        // 카드 3D 틸트 효과
+        cards.forEach((card) => {
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const px = (e.clientX - rect.left) / rect.width;
+            const py = (e.clientY - rect.top) / rect.height;
+            const rotateY = (px - 0.5) * 16;
+            const rotateX = (0.5 - py) * 14;
+            card.style.transform = `translateY(0) perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.04)`;
+          });
+          card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+          });
+        });
+
+        // ---------------------------------------------------------------
+        // 3) 카드 클릭 시 상세 모달
+        // ---------------------------------------------------------------
+        const modal = document.getElementById('modal');
+        const modalMedia = document.getElementById('modalMedia');
+        const modalRibbon = document.getElementById('modalRibbon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const modalTags = document.getElementById('modalTags');
+        const modalClose = document.getElementById('modalClose');
+
+        if (modal && modalMedia && modalRibbon && modalTitle && modalDesc && modalTags && modalClose) {
+          const ribbonClass = { active:'ribbon--active', beta:'ribbon--beta', planning:'ribbon--planning', upcoming:'ribbon--upcoming' };
+
+          cards.forEach((card) => {
+            card.addEventListener('click', () => {
+              if (moved) return;
+              const mediaEl = card.querySelector('.project-card__media');
+              modalMedia.style.background = getComputedStyle(mediaEl).backgroundImage;
+              modalRibbon.className = 'project-card__ribbon ' + ribbonClass[card.dataset.ribbon];
+              modalRibbon.textContent = card.dataset.status;
+              modalTitle.textContent = card.dataset.title;
+              modalDesc.textContent = card.dataset.desc;
+              modalTags.innerHTML = card.dataset.tags.split(',').map(t => `<span class="modal__tag">${t}</span>`).join('');
+              modal.classList.add('open');
+            });
+          });
+          const closeModal = () => modal.classList.remove('open');
+          modalClose.addEventListener('click', closeModal);
+          modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+          document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+        }
+      }
+    } catch (err) {
+      console.error('carousel/modal error:', err);
+    }
   </script>
 
 </body>
