@@ -235,11 +235,11 @@
     background:#efeaf9; padding:5px 10px; border-radius:100px;
   }
 
-  .p1 .project-card__media{ background:#dcdcdc url('assets/Project_1.jpg') center/cover no-repeat; }
-  .p2 .project-card__media{ background:#dcdcdc url('assets/Project_2.jpg') center/cover no-repeat; }
-  .p3 .project-card__media{ background:#dcdcdc url('assets/Project_3.jpg') center/cover no-repeat; }
-  .p4 .project-card__media{ background:#dcdcdc url('assets/Project_4.jpg') center/cover no-repeat; }
-  .p5 .project-card__media{ background:#dcdcdc url('assets/Project_5.jpg') center/cover no-repeat; }
+  .p1 .project-card__media{ background:#dcdcdc url('assets/Project_1.jpg') center/contain no-repeat; }
+  .p2 .project-card__media{ background:#dcdcdc url('assets/Project_2.jpg') center/contain no-repeat; }
+  .p3 .project-card__media{ background:#dcdcdc url('assets/Project_3.jpg') center/contain no-repeat; }
+  .p4 .project-card__media{ background:#dcdcdc url('assets/Project_4.jpg') center/contain no-repeat; }
+  .p5 .project-card__media{ background:#dcdcdc url('assets/Project_5.jpg') center/contain no-repeat; }
 
   /* ---------- 상세 모달 ---------- */
   .modal{
@@ -577,7 +577,12 @@
             card.addEventListener('click', () => {
               if (moved) return;
               const mediaEl = card.querySelector('.project-card__media');
-              modalMedia.style.background = getComputedStyle(mediaEl).backgroundImage;
+              const mediaStyle = getComputedStyle(mediaEl);
+              modalMedia.style.backgroundColor = mediaStyle.backgroundColor;
+              modalMedia.style.backgroundImage = mediaStyle.backgroundImage;
+              modalMedia.style.backgroundSize = mediaStyle.backgroundSize;
+              modalMedia.style.backgroundPosition = mediaStyle.backgroundPosition;
+              modalMedia.style.backgroundRepeat = mediaStyle.backgroundRepeat;
               modalRibbon.className = 'project-card__ribbon ' + ribbonClass[card.dataset.ribbon];
               modalRibbon.textContent = card.dataset.status;
               modalTitle.textContent = card.dataset.title;
