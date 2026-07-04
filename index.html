@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nimbus — 프로젝트 소개</title>
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root{
+    --body-bg:#efefef;      /* 요청하신 본문 배경색 (그라디언트 없음) */
+    --ink:#2a2733;
+    --ink-soft:#68657a;
+    --lilac:#8c7bd6;
+    --lilac-deep:#6c58c4;
+    --white:#ffffff;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  body{
+    font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;
+    color:var(--ink);
+    background:var(--body-bg);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ text-decoration:none; color:inherit; }
+
+  /* ---------- 상단 로고 (투명, 섹션 위에 얹힘) ---------- */
+  .nav{
+    position:absolute; top:0; left:0; right:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:32px 48px;
+  }
+  .nav__logo{
+    font-weight:800; font-size:18px; letter-spacing:-0.02em;
+    color:var(--ink);
+  }
+  .nav__cta{
+    font-size:14px; font-weight:600; padding:10px 20px;
+    border-radius:100px; background:var(--ink); color:var(--white);
+  }
+
+  /* ---------- 본문: 좌우 1:1, 배경색과 영상이 분리 없이 한 화면 ---------- */
+  .section{
+    position:relative;
+    height:100vh;
+    display:grid;
+    grid-template-columns:1fr 1fr;   /* 좌우 1:1 비율 */
+    grid-template-rows:1fr;
+    background:var(--body-bg);       /* 그라디언트 없이 요청 색 그대로 */
+  }
+
+  .section__bg{
+    background:var(--body-bg);
+  }
+
+  .section__video{
+    position:relative;
+    overflow:hidden;
+    height:100%;
+  }
+  .section__video video,
+  .section__video .fallback{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+  }
+  /* 실제 영상이 없을 때를 위한 정적 플레이스홀더 (video 태그 활성화 시 자동으로 가려짐) */
+  .fallback{
+    background:linear-gradient(160deg,#dcd2f5,#b7a3e6 55%,#9481d8);
+  }
+
+  /* ---------- 텍스트 레이어: 그리드 전체 위에 얹혀서 영상 쪽으로 자유롭게 겹침 ---------- */
+  .content{
+    position:absolute; inset:0;
+    z-index:10;                 /* 영상보다 항상 위 레이어 */
+    display:flex; align-items:center;
+    padding:0 48px;
+    pointer-events:none;
+  }
+  .content__inner{
+    width:64%;                  /* 왼쪽에서 시작해 오른쪽(영상) 위까지 자연스럽게 확장 */
+    pointer-events:auto;
+  }
+  .kicker{
+    font-size:13px; font-weight:600; letter-spacing:0.14em;
+    color:var(--lilac-deep); text-transform:uppercase;
+    margin-bottom:20px;
+  }
+  .heading{
+    font-size:clamp(34px, 4.6vw, 58px);
+    font-weight:500; line-height:1.28; letter-spacing:-0.03em;
+    color:var(--ink);
+  }
+  .heading .over{
+    font-weight:800;
+  }
+  .desc{
+    margin-top:24px;
+    font-size:16.5px; line-height:1.75; color:var(--ink-soft);
+    max-width:420px;
+  }
+  .actions{ display:flex; gap:14px; margin-top:36px; }
+  .btn{
+    font-size:14.5px; font-weight:600; padding:14px 26px; border-radius:100px;
+    transition:transform .2s ease, background .2s ease;
+  }
+  .btn--primary{ background:var(--ink); color:var(--white); }
+  .btn--primary:hover{ background:var(--lilac-deep); transform:translateY(-2px); }
+  .btn--ghost{ background:var(--white); color:var(--ink); }
+  .btn--ghost:hover{ color:var(--lilac-deep); }
+
+  /* ---------- 핵심 기능 ---------- */
+  .features{
+    background:var(--white);
+    padding:140px 48px;
+  }
+  .features__head{
+    max-width:640px; margin:0 auto 72px;
+    text-align:center;
+  }
+  .features__kicker{
+    font-size:13px; font-weight:600; letter-spacing:0.14em;
+    color:var(--lilac-deep); text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .features__title{
+    font-size:clamp(26px, 3vw, 36px);
+    font-weight:500; line-height:1.4; letter-spacing:-0.02em;
+  }
+  .features__title b{ font-weight:800; }
+  .features__grid{
+    max-width:1100px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:40px;
+  }
+  .feature-card{
+    padding:40px 32px;
+    background:var(--body-bg);
+    border-radius:20px;
+  }
+  .feature-card__num{
+    font-size:13px; font-weight:700; color:var(--lilac-deep);
+    margin-bottom:20px; letter-spacing:0.05em;
+  }
+  .feature-card__title{
+    font-size:19px; font-weight:800; margin-bottom:12px; letter-spacing:-0.01em;
+  }
+  .feature-card__desc{
+    font-size:14.5px; line-height:1.7; color:var(--ink-soft);
+    font-weight:400;
+  }
+
+  /* ---------- 통계 밴드 ---------- */
+  .stats{
+    background:var(--body-bg);
+    padding:100px 48px;
+    border-top:1px solid rgba(42,39,51,0.08);
+  }
+  .stats__grid{
+    max-width:1000px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(3,1fr);
+    text-align:center;
+  }
+  .stat__num{
+    font-size:clamp(36px, 4vw, 52px);
+    font-weight:500; letter-spacing:-0.02em;
+  }
+  .stat__num b{ font-weight:800; color:var(--lilac-deep); }
+  .stat__label{
+    margin-top:10px; font-size:14px; color:var(--ink-soft);
+  }
+
+  /* ---------- CTA 배너 ---------- */
+  .cta{
+    background:var(--ink);
+    color:var(--white);
+    padding:120px 48px;
+    text-align:center;
+  }
+  .cta__title{
+    font-size:clamp(28px, 3.4vw, 42px);
+    font-weight:500; letter-spacing:-0.02em; line-height:1.4;
+    max-width:640px; margin:0 auto 36px;
+  }
+  .cta__title b{ font-weight:800; }
+  .cta .btn--primary{ background:var(--white); color:var(--ink); }
+  .cta .btn--primary:hover{ background:var(--lilac-deep); color:var(--white); }
+
+  @media (max-width:900px){
+    .features{ padding:90px 24px; }
+    .features__grid{ grid-template-columns:1fr; gap:20px; }
+    .stats{ padding:70px 24px; }
+    .stats__grid{ grid-template-columns:1fr; gap:36px; }
+    .cta{ padding:90px 24px; }
+  }
+
+  /* ---------- FOOTER ---------- */
+  .footer{
+    padding:26px 48px;
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:13px; color:var(--ink-soft);
+    background:var(--body-bg);
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    .section{ height:auto; min-height:100vh; grid-template-columns:1fr; grid-template-rows:52vh 48vh; }
+    .content{ padding:0 24px; align-items:flex-start; padding-top:110px; }
+    .content__inner{ width:100%; }
+    .nav{ padding:22px 24px; }
+    .footer{ flex-direction:column; gap:10px; text-align:center; }
+  }
+
+</style>
+</head>
+<body>
+
+  <section class="section">
+    <nav class="nav">
+      <div class="nav__logo">Nimbus</div>
+      <a href="#footer" class="nav__cta">문의하기</a>
+    </nav>
+
+    <!-- 왼쪽 절반: 배경색만, 오른쪽 절반: 영상. 둘 사이 카드/프레임 분리 없음 -->
+    <div class="section__bg"></div>
+    <div class="section__video">
+      <!--
+        실제 영상 파일을 넣으시려면 아래 video 태그 주석을 해제하고
+        src="영상경로.mp4" 부분만 바꿔주세요. (자동재생 / 무한루프 / 음소거)
+      -->
+      <video autoplay muted loop playsinline>
+        <source src="assets/project-preview.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- 텍스트는 항상 영상보다 위 레이어, 오른쪽 영상 위까지 자연스럽게 확장되어 겹침 -->
+    <div class="content">
+      <div class="content__inner">
+        <p class="kicker">Project Introduction</p>
+        <h1 class="heading">복잡한 협업을 하나의<br><span class="over">흐름</span>으로 정리하는 Nimbus</h1>
+        <p class="desc">
+          흩어진 메시지, 파일, 일정을 한 곳으로 모아 팀이 다음 할 일에만 집중할 수 있도록
+          돕는 협업 프로젝트입니다.
+        </p>
+        <div class="actions">
+          <a href="#" class="btn btn--primary">데모 영상 보기</a>
+          <a href="#footer" class="btn btn--ghost">문의하기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="features__head">
+      <p class="features__kicker">Why Nimbus</p>
+      <h2 class="features__title">복잡함은 걷어내고, <b>필요한 흐름</b>만 남겼습니다</h2>
+    </div>
+    <div class="features__grid">
+      <div class="feature-card">
+        <p class="feature-card__num">01</p>
+        <p class="feature-card__title">실시간 정리</p>
+        <p class="feature-card__desc">대화와 파일이 자동으로 관련 작업에 연결되어, 흩어질 틈이 없습니다.</p>
+      </div>
+      <div class="feature-card">
+        <p class="feature-card__num">02</p>
+        <p class="feature-card__title">한눈에 보는 진행 상황</p>
+        <p class="feature-card__desc">팀 전체의 작업 흐름을 하나의 화면에서 확인할 수 있습니다.</p>
+      </div>
+      <div class="feature-card">
+        <p class="feature-card__num">03</p>
+        <p class="feature-card__title">가벼운 사용성</p>
+        <p class="feature-card__desc">새 팀원도 별도 교육 없이 바로 사용할 수 있습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stats__grid">
+      <div class="stat">
+        <p class="stat__num"><b>40%</b></p>
+        <p class="stat__label">불필요한 커뮤니케이션 감소</p>
+      </div>
+      <div class="stat">
+        <p class="stat__num"><b>3배</b></p>
+        <p class="stat__label">빨라진 의사결정 속도</p>
+      </div>
+      <div class="stat">
+        <p class="stat__num"><b>1일</b></p>
+        <p class="stat__label">온보딩에 걸리는 시간</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2 class="cta__title">이제, 팀의 흐름을 <b>Nimbus</b>로 정리해보세요</h2>
+    <a href="#footer" class="btn btn--primary">데모 신청하기</a>
+  </section>
+
+  <footer class="footer" id="footer">
+    <p>© 2026 Nimbus Project. All rights reserved.</p>
+    <a href="#">contact@nimbus.team</a>
+  </footer>
+
+</body>
+</html>
