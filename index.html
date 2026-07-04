@@ -18,20 +18,34 @@
 
   *{ margin:0; padding:0; box-sizing:border-box; }
 
+  html{ scroll-behavior:smooth; }
+
   body{
     font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;
     color:var(--ink);
     background:var(--body-bg);
     -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
   }
 
   a{ text-decoration:none; color:inherit; }
+  button{ font-family:inherit; }
 
-  /* ---------- 상단 로고 (투명, 섹션 위에 얹힘) ---------- */
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(22px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @keyframes fadeIn{
+    from{ opacity:0; }
+    to{ opacity:1; }
+  }
+
+  /* ---------- 상단 로고 ---------- */
   .nav{
     position:absolute; top:0; left:0; right:0; z-index:20;
     display:flex; align-items:center; justify-content:space-between;
     padding:32px 48px;
+    animation:fadeIn .8s ease .1s both;
   }
   .nav__logo{
     font-weight:800; font-size:18px; letter-spacing:-0.02em;
@@ -40,160 +54,215 @@
   .nav__cta{
     font-size:14px; font-weight:600; padding:10px 20px;
     border-radius:100px; background:var(--ink); color:var(--white);
+    transition:transform .25s ease, background .25s ease;
   }
+  .nav__cta:hover{ background:var(--lilac-deep); transform:translateY(-2px); }
 
-  /* ---------- 본문: 좌우 1:1, 배경색과 영상이 분리 없이 한 화면 ---------- */
-  .section{
+  /* ---------- 히어로: 좌우 1:1, 배경과 영상이 분리 없이 한 화면 ---------- */
+  .hero{
     position:relative;
     height:100vh;
     display:grid;
-    grid-template-columns:1fr 1fr;   /* 좌우 1:1 비율 */
+    grid-template-columns:1fr 1fr;
     grid-template-rows:1fr;
-    background:var(--body-bg);       /* 그라디언트 없이 요청 색 그대로 */
-  }
-
-  .section__bg{
     background:var(--body-bg);
   }
 
-  .section__video{
+  .hero__bg{ background:var(--body-bg); }
+
+  .hero__video{
     position:relative;
     overflow:hidden;
     height:100%;
   }
-  .section__video video,
-  .section__video .fallback{
+  .hero__video video,
+  .hero__video .fallback{
     position:absolute; inset:0;
     width:100%; height:100%;
     object-fit:cover;
   }
-  /* 실제 영상이 없을 때를 위한 정적 플레이스홀더 (video 태그 활성화 시 자동으로 가려짐) */
   .fallback{
     background:linear-gradient(160deg,#dcd2f5,#b7a3e6 55%,#9481d8);
   }
 
-  /* ---------- 텍스트 레이어: 그리드 전체 위에 얹혀서 영상 쪽으로 자유롭게 겹침 ---------- */
+  /* ---------- 텍스트 레이어: 영상보다 위, 오른쪽으로 자연스럽게 겹침 ---------- */
   .content{
     position:absolute; inset:0;
-    z-index:10;                 /* 영상보다 항상 위 레이어 */
+    z-index:10;
     display:flex; align-items:center;
-    padding:0 48px;
+    padding:0 80px;
     pointer-events:none;
   }
   .content__inner{
-    width:64%;                  /* 왼쪽에서 시작해 오른쪽(영상) 위까지 자연스럽게 확장 */
+    width:64%;
     pointer-events:auto;
-  }
-  .kicker{
-    font-size:13px; font-weight:600; letter-spacing:0.14em;
-    color:var(--lilac-deep); text-transform:uppercase;
-    margin-bottom:20px;
   }
   .heading{
     font-size:clamp(34px, 4.6vw, 58px);
     font-weight:500; line-height:1.28; letter-spacing:-0.03em;
     color:var(--ink);
+    animation:fadeUp .8s ease .15s both;
   }
-  .heading .over{
-    font-weight:800;
-  }
+  .heading .over{ font-weight:800; }
   .desc{
     margin-top:24px;
     font-size:16.5px; line-height:1.75; color:var(--ink-soft);
     max-width:420px;
+    animation:fadeUp .8s ease .3s both;
   }
-  .actions{ display:flex; gap:14px; margin-top:36px; }
+  .actions{
+    display:flex; gap:14px; margin-top:36px;
+    animation:fadeUp .8s ease .45s both;
+  }
   .btn{
     font-size:14.5px; font-weight:600; padding:14px 26px; border-radius:100px;
-    transition:transform .2s ease, background .2s ease;
+    display:inline-block;
+    transition:transform .25s ease, background .25s ease;
   }
   .btn--primary{ background:var(--ink); color:var(--white); }
-  .btn--primary:hover{ background:var(--lilac-deep); transform:translateY(-2px); }
+  .btn--primary:hover{ background:var(--lilac-deep); transform:translateY(-3px); }
   .btn--ghost{ background:var(--white); color:var(--ink); }
-  .btn--ghost:hover{ color:var(--lilac-deep); }
+  .btn--ghost:hover{ color:var(--lilac-deep); transform:translateY(-3px); }
 
-  /* ---------- 핵심 기능 ---------- */
-  .features{
-    background:var(--white);
-    padding:140px 48px;
-  }
-  .features__head{
-    max-width:640px; margin:0 auto 72px;
-    text-align:center;
-  }
-  .features__kicker{
-    font-size:13px; font-weight:600; letter-spacing:0.14em;
-    color:var(--lilac-deep); text-transform:uppercase;
-    margin-bottom:18px;
-  }
-  .features__title{
-    font-size:clamp(26px, 3vw, 36px);
-    font-weight:500; line-height:1.4; letter-spacing:-0.02em;
-  }
-  .features__title b{ font-weight:800; }
-  .features__grid{
-    max-width:1100px; margin:0 auto;
-    display:grid; grid-template-columns:repeat(3,1fr); gap:40px;
-  }
-  .feature-card{
-    padding:40px 32px;
+  /* ---------- 진행중인 프로젝트 캐러셀 ---------- */
+  .projects{
     background:var(--body-bg);
-    border-radius:20px;
+    padding:130px 0 120px;
+    perspective:1400px;
   }
-  .feature-card__num{
-    font-size:13px; font-weight:700; color:var(--lilac-deep);
-    margin-bottom:20px; letter-spacing:0.05em;
+  .projects__head{
+    max-width:1200px; margin:0 auto 56px;
+    padding:0 80px;
+    display:flex; align-items:flex-end; justify-content:space-between;
+    gap:24px;
+    opacity:0; transform:translateY(24px);
   }
-  .feature-card__title{
-    font-size:19px; font-weight:800; margin-bottom:12px; letter-spacing:-0.01em;
-  }
-  .feature-card__desc{
-    font-size:14.5px; line-height:1.7; color:var(--ink-soft);
-    font-weight:400;
-  }
-
-  /* ---------- 통계 밴드 ---------- */
-  .stats{
-    background:var(--body-bg);
-    padding:100px 48px;
-    border-top:1px solid rgba(42,39,51,0.08);
-  }
-  .stats__grid{
-    max-width:1000px; margin:0 auto;
-    display:grid; grid-template-columns:repeat(3,1fr);
-    text-align:center;
-  }
-  .stat__num{
-    font-size:clamp(36px, 4vw, 52px);
+  .projects__head.in-view{ animation:fadeUp .7s ease both; }
+  .projects__title{
+    font-size:clamp(26px, 3vw, 38px);
     font-weight:500; letter-spacing:-0.02em;
   }
-  .stat__num b{ font-weight:800; color:var(--lilac-deep); }
-  .stat__label{
-    margin-top:10px; font-size:14px; color:var(--ink-soft);
+  .projects__title b{ font-weight:800; }
+  .projects__nav{ display:flex; gap:10px; }
+  .projects__arrow{
+    width:46px; height:46px; border-radius:50%;
+    background:var(--white); color:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; border:1px solid rgba(42,39,51,0.10);
+    transition:transform .25s ease, background .25s ease, color .25s ease;
+  }
+  .projects__arrow:hover{ background:var(--ink); color:var(--white); transform:translateY(-3px); }
+  .projects__arrow svg{ width:18px; height:18px; }
+
+  .projects__track{
+    display:flex; gap:36px;
+    overflow-x:auto;
+    padding:30px 80px 40px;
+    scrollbar-width:none;
+    cursor:grab;
+    user-select:none;
+  }
+  .projects__track.dragging{ cursor:grabbing; }
+  .projects__track::-webkit-scrollbar{ display:none; }
+
+  .project-card{
+    position:relative;
+    flex:0 0 clamp(280px, 32vw, 380px);
+    border-radius:24px;
+    overflow:visible;
+    opacity:0;
+    transform:translateY(28px);
+    will-change:transform;
+  }
+  .project-card.in-view{ animation:cardIn .7s cubic-bezier(.2,.8,.2,1) forwards; }
+  @keyframes cardIn{ to{ opacity:1; } }
+
+  .project-card__inner{
+    border-radius:24px;
+    overflow:hidden;
+    background:var(--white);
+    pointer-events:none;
+  }
+  .project-card__media{
+    height:190px;
+    position:relative;
+    overflow:hidden;
+  }
+  .project-card__media::after{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(0deg, rgba(42,39,51,0.35), transparent 55%);
   }
 
-  /* ---------- CTA 배너 ---------- */
-  .cta{
-    background:var(--ink);
-    color:var(--white);
-    padding:120px 48px;
-    text-align:center;
+  /* 북마크 모양 상태 리본 */
+  .project-card__ribbon{
+    position:absolute; top:-6px; left:22px; z-index:3;
+    padding:9px 14px 15px;
+    font-size:11.5px; font-weight:700; color:#fff; letter-spacing:0.01em;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
   }
-  .cta__title{
-    font-size:clamp(28px, 3.4vw, 42px);
-    font-weight:500; letter-spacing:-0.02em; line-height:1.4;
-    max-width:640px; margin:0 auto 36px;
-  }
-  .cta__title b{ font-weight:800; }
-  .cta .btn--primary{ background:var(--white); color:var(--ink); }
-  .cta .btn--primary:hover{ background:var(--lilac-deep); color:var(--white); }
+  .ribbon--active{ background:var(--lilac-deep); }
+  .ribbon--beta{ background:#4f8fcf; }
+  .ribbon--planning{ background:#8a8698; }
+  .ribbon--upcoming{ background:#d99a4e; }
 
-  @media (max-width:900px){
-    .features{ padding:90px 24px; }
-    .features__grid{ grid-template-columns:1fr; gap:20px; }
-    .stats{ padding:70px 24px; }
-    .stats__grid{ grid-template-columns:1fr; gap:36px; }
-    .cta{ padding:90px 24px; }
+  .project-card__body{ padding:26px 26px 30px; }
+  .project-card__title{
+    font-size:19px; font-weight:800; letter-spacing:-0.01em;
+    margin-bottom:10px;
+  }
+  .project-card__desc{
+    font-size:14px; line-height:1.7; color:var(--ink-soft);
+    margin-bottom:18px;
+  }
+  .project-card__tags{ display:flex; gap:8px; flex-wrap:wrap; }
+  .project-card__tag{
+    font-size:11.5px; font-weight:600; color:var(--lilac-deep);
+    background:#efeaf9; padding:5px 10px; border-radius:100px;
+  }
+
+  .p1 .project-card__media{ background:linear-gradient(150deg,#f0c9d8,#e39ab8); }
+  .p2 .project-card__media{ background:linear-gradient(150deg,#c9e0f0,#8fbfe6); }
+  .p3 .project-card__media{ background:linear-gradient(150deg,#dcd2f5,#a892e0); }
+  .p4 .project-card__media{ background:linear-gradient(150deg,#cdeee0,#89d1b4); }
+  .p5 .project-card__media{ background:linear-gradient(150deg,#f5e2c2,#eabd7a); }
+
+  /* ---------- 상세 모달 ---------- */
+  .modal{
+    position:fixed; inset:0; z-index:100;
+    background:rgba(42,39,51,0.55);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+    opacity:0; pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  .modal.open{ opacity:1; pointer-events:auto; }
+  .modal__panel{
+    background:var(--white);
+    border-radius:28px;
+    width:100%; max-width:620px;
+    overflow:hidden;
+    transform:scale(0.92) translateY(10px);
+    transition:transform .35s cubic-bezier(.2,.8,.2,1);
+  }
+  .modal.open .modal__panel{ transform:scale(1) translateY(0); }
+  .modal__media{ height:280px; position:relative; }
+  .modal__close{
+    position:absolute; top:18px; right:18px; z-index:5;
+    width:36px; height:36px; border-radius:50%; border:none;
+    background:rgba(255,255,255,0.9); color:var(--ink);
+    font-size:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .2s ease;
+  }
+  .modal__close:hover{ transform:rotate(90deg); }
+  .modal__body{ padding:34px 34px 38px; }
+  .modal__title{ font-size:24px; font-weight:800; letter-spacing:-0.01em; margin-bottom:14px; }
+  .modal__desc{ font-size:15px; line-height:1.8; color:var(--ink-soft); margin-bottom:22px; }
+  .modal__tags{ display:flex; gap:8px; flex-wrap:wrap; }
+  .modal__tag{
+    font-size:12px; font-weight:600; color:var(--lilac-deep);
+    background:#efeaf9; padding:6px 12px; border-radius:100px;
   }
 
   /* ---------- FOOTER ---------- */
@@ -206,39 +275,39 @@
 
   /* ---------- RESPONSIVE ---------- */
   @media (max-width:900px){
-    .section{ height:auto; min-height:100vh; grid-template-columns:1fr; grid-template-rows:52vh 48vh; }
-    .content{ padding:0 24px; align-items:flex-start; padding-top:110px; }
+    .hero{ height:auto; min-height:100vh; grid-template-columns:1fr; grid-template-rows:52vh 48vh; }
+    .content{ padding:0 28px; align-items:flex-start; padding-top:110px; }
     .content__inner{ width:100%; }
     .nav{ padding:22px 24px; }
+    .projects{ padding:90px 0 90px; }
+    .projects__head{ padding:0 24px; flex-direction:column; align-items:flex-start; gap:20px; }
+    .projects__track{ padding:20px 24px 30px; }
     .footer{ flex-direction:column; gap:10px; text-align:center; }
   }
 
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
 </style>
 </head>
 <body>
 
-  <section class="section">
+  <section class="hero">
     <nav class="nav">
       <div class="nav__logo">Nimbus</div>
       <a href="#footer" class="nav__cta">문의하기</a>
     </nav>
 
-    <!-- 왼쪽 절반: 배경색만, 오른쪽 절반: 영상. 둘 사이 카드/프레임 분리 없음 -->
-    <div class="section__bg"></div>
-    <div class="section__video">
-      <!--
-        실제 영상 파일을 넣으시려면 아래 video 태그 주석을 해제하고
-        src="영상경로.mp4" 부분만 바꿔주세요. (자동재생 / 무한루프 / 음소거)
-      -->
-      <video autoplay muted loop playsinline>
+    <div class="hero__bg"></div>
+    <div class="hero__video">
+      <div class="fallback" id="videoFallback"></div>
+      <video id="heroVideo" autoplay muted loop playsinline preload="auto">
         <source src="assets/project-preview.mp4" type="video/mp4">
       </video>
     </div>
 
-    <!-- 텍스트는 항상 영상보다 위 레이어, 오른쪽 영상 위까지 자연스럽게 확장되어 겹침 -->
     <div class="content">
       <div class="content__inner">
-        <p class="kicker">Project Introduction</p>
         <h1 class="heading">복잡한 협업을 하나의<br><span class="over">흐름</span>으로 정리하는 Nimbus</h1>
         <p class="desc">
           흩어진 메시지, 파일, 일정을 한 곳으로 모아 팀이 다음 할 일에만 집중할 수 있도록
@@ -252,56 +321,209 @@
     </div>
   </section>
 
-  <section class="features">
-    <div class="features__head">
-      <p class="features__kicker">Why Nimbus</p>
-      <h2 class="features__title">복잡함은 걷어내고, <b>필요한 흐름</b>만 남겼습니다</h2>
-    </div>
-    <div class="features__grid">
-      <div class="feature-card">
-        <p class="feature-card__num">01</p>
-        <p class="feature-card__title">실시간 정리</p>
-        <p class="feature-card__desc">대화와 파일이 자동으로 관련 작업에 연결되어, 흩어질 틈이 없습니다.</p>
-      </div>
-      <div class="feature-card">
-        <p class="feature-card__num">02</p>
-        <p class="feature-card__title">한눈에 보는 진행 상황</p>
-        <p class="feature-card__desc">팀 전체의 작업 흐름을 하나의 화면에서 확인할 수 있습니다.</p>
-      </div>
-      <div class="feature-card">
-        <p class="feature-card__num">03</p>
-        <p class="feature-card__title">가벼운 사용성</p>
-        <p class="feature-card__desc">새 팀원도 별도 교육 없이 바로 사용할 수 있습니다.</p>
+  <section class="projects" id="projects">
+    <div class="projects__head">
+      <h2 class="projects__title">현재 <b>진행 중인 프로젝트</b>들이에요</h2>
+      <div class="projects__nav">
+        <button class="projects__arrow" id="prevBtn" aria-label="이전 프로젝트">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="projects__arrow" id="nextBtn" aria-label="다음 프로젝트">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
       </div>
     </div>
-  </section>
 
-  <section class="stats">
-    <div class="stats__grid">
-      <div class="stat">
-        <p class="stat__num"><b>40%</b></p>
-        <p class="stat__label">불필요한 커뮤니케이션 감소</p>
-      </div>
-      <div class="stat">
-        <p class="stat__num"><b>3배</b></p>
-        <p class="stat__label">빨라진 의사결정 속도</p>
-      </div>
-      <div class="stat">
-        <p class="stat__num"><b>1일</b></p>
-        <p class="stat__label">온보딩에 걸리는 시간</p>
-      </div>
+    <div class="projects__track" id="track">
+      <article class="project-card p1" data-title="Nimbus Flow" data-desc="팀의 대화와 작업을 하나의 흐름으로 연결하는 코어 협업 도구입니다." data-tags="협업,웹" data-status="진행중" data-ribbon="active">
+        <div class="project-card__ribbon ribbon--active">진행중</div>
+        <div class="project-card__inner">
+          <div class="project-card__media"></div>
+          <div class="project-card__body">
+            <p class="project-card__title">Nimbus Flow</p>
+            <p class="project-card__desc">팀의 대화와 작업을 하나의 흐름으로 연결하는 코어 협업 도구.</p>
+            <div class="project-card__tags"><span class="project-card__tag">협업</span><span class="project-card__tag">웹</span></div>
+          </div>
+        </div>
+      </article>
+      <article class="project-card p2" data-title="Nimbus Board" data-desc="팀 전체의 진행 상황을 한 화면에서 볼 수 있는 시각화 보드입니다." data-tags="대시보드,시각화" data-status="베타" data-ribbon="beta">
+        <div class="project-card__ribbon ribbon--beta">베타</div>
+        <div class="project-card__inner">
+          <div class="project-card__media"></div>
+          <div class="project-card__body">
+            <p class="project-card__title">Nimbus Board</p>
+            <p class="project-card__desc">팀 전체의 진행 상황을 한 화면에서 볼 수 있는 시각화 보드.</p>
+            <div class="project-card__tags"><span class="project-card__tag">대시보드</span><span class="project-card__tag">시각화</span></div>
+          </div>
+        </div>
+      </article>
+      <article class="project-card p3" data-title="Nimbus Mobile" data-desc="이동 중에도 흐름을 놓치지 않는 모바일 전용 앱입니다." data-tags="모바일,iOS/AOS" data-status="기획중" data-ribbon="planning">
+        <div class="project-card__ribbon ribbon--planning">기획중</div>
+        <div class="project-card__inner">
+          <div class="project-card__media"></div>
+          <div class="project-card__body">
+            <p class="project-card__title">Nimbus Mobile</p>
+            <p class="project-card__desc">이동 중에도 흐름을 놓치지 않는 모바일 전용 앱.</p>
+            <div class="project-card__tags"><span class="project-card__tag">모바일</span><span class="project-card__tag">iOS/AOS</span></div>
+          </div>
+        </div>
+      </article>
+      <article class="project-card p4" data-title="Nimbus Insights" data-desc="팀의 협업 데이터를 분석해 병목을 자동으로 짚어주는 리포트입니다." data-tags="분석,리포트" data-status="출시 예정" data-ribbon="upcoming">
+        <div class="project-card__ribbon ribbon--upcoming">출시 예정</div>
+        <div class="project-card__inner">
+          <div class="project-card__media"></div>
+          <div class="project-card__body">
+            <p class="project-card__title">Nimbus Insights</p>
+            <p class="project-card__desc">팀의 협업 데이터를 분석해 병목을 자동으로 짚어주는 리포트.</p>
+            <div class="project-card__tags"><span class="project-card__tag">분석</span><span class="project-card__tag">리포트</span></div>
+          </div>
+        </div>
+      </article>
+      <article class="project-card p5" data-title="Nimbus API" data-desc="외부 서비스와 자유롭게 연결할 수 있는 오픈 API 프로젝트입니다." data-tags="개발자,API" data-status="진행중" data-ribbon="active">
+        <div class="project-card__ribbon ribbon--active">진행중</div>
+        <div class="project-card__inner">
+          <div class="project-card__media"></div>
+          <div class="project-card__body">
+            <p class="project-card__title">Nimbus API</p>
+            <p class="project-card__desc">외부 서비스와 자유롭게 연결할 수 있는 오픈 API 프로젝트.</p>
+            <div class="project-card__tags"><span class="project-card__tag">개발자</span><span class="project-card__tag">API</span></div>
+          </div>
+        </div>
+      </article>
     </div>
-  </section>
-
-  <section class="cta">
-    <h2 class="cta__title">이제, 팀의 흐름을 <b>Nimbus</b>로 정리해보세요</h2>
-    <a href="#footer" class="btn btn--primary">데모 신청하기</a>
   </section>
 
   <footer class="footer" id="footer">
     <p>© 2026 Nimbus Project. All rights reserved.</p>
     <a href="#">contact@nimbus.team</a>
   </footer>
+
+  <!-- 카드 클릭 시 뜨는 상세 모달 -->
+  <div class="modal" id="modal">
+    <div class="modal__panel">
+      <div class="modal__media" id="modalMedia">
+        <button class="modal__close" id="modalClose">✕</button>
+        <div class="project-card__ribbon" id="modalRibbon"></div>
+      </div>
+      <div class="modal__body">
+        <p class="modal__title" id="modalTitle"></p>
+        <p class="modal__desc" id="modalDesc"></p>
+        <div class="modal__tags" id="modalTags"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 영상 0.5배속 재생
+    const heroVideo = document.getElementById('heroVideo');
+    if (heroVideo) {
+      const setSlow = () => { heroVideo.playbackRate = 0.5; };
+      heroVideo.addEventListener('loadedmetadata', setSlow);
+      heroVideo.addEventListener('error', () => { heroVideo.style.display = 'none'; });
+      setSlow();
+    }
+
+    const track = document.getElementById('track');
+    const cards = Array.from(track.querySelectorAll('.project-card'));
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // 화살표로 카드 넘기기
+    const scrollByCard = (dir) => {
+      const card = track.querySelector('.project-card');
+      const gap = 36;
+      const distance = (card ? card.getBoundingClientRect().width : 320) + gap;
+      track.scrollBy({ left: dir * distance, behavior: 'smooth' });
+    };
+    prevBtn.addEventListener('click', () => scrollByCard(-1));
+    nextBtn.addEventListener('click', () => scrollByCard(1));
+
+    // 3D 코스플로우 효과: 스크롤 위치에 따라 카드가 부드럽게 회전/스케일
+    function updateCardTransforms(){
+      const rect = track.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      cards.forEach(card => {
+        const cardRect = card.getBoundingClientRect();
+        const cardCenter = cardRect.left + cardRect.width / 2;
+        const dist = (cardCenter - centerX) / rect.width;
+        const clamped = Math.max(-1, Math.min(1, dist));
+        const angle = clamped * 26;
+        const scale = 1 - Math.abs(clamped) * 0.12;
+        const opacity = 1 - Math.abs(clamped) * 0.3;
+        const z = -Math.abs(clamped) * 80;
+        card.style.transform = `perspective(1400px) rotateY(${-angle}deg) scale(${scale}) translateZ(${z}px)`;
+        card.style.opacity = opacity;
+      });
+    }
+    track.addEventListener('scroll', () => requestAnimationFrame(updateCardTransforms));
+    window.addEventListener('resize', updateCardTransforms);
+
+    // 마우스 드래그로 카드 넘기기
+    let isDown = false, startX = 0, startScroll = 0, moved = false;
+    track.addEventListener('mousedown', (e) => {
+      isDown = true; moved = false;
+      startX = e.pageX;
+      startScroll = track.scrollLeft;
+      track.classList.add('dragging');
+    });
+    window.addEventListener('mouseup', () => {
+      isDown = false;
+      track.classList.remove('dragging');
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      const delta = e.pageX - startX;
+      if (Math.abs(delta) > 6) moved = true;
+      track.scrollLeft = startScroll - delta;
+    });
+
+    // 카드 클릭 시 상세 모달 (드래그였다면 무시)
+    const modal = document.getElementById('modal');
+    const modalMedia = document.getElementById('modalMedia');
+    const modalRibbon = document.getElementById('modalRibbon');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalTags = document.getElementById('modalTags');
+    const modalClose = document.getElementById('modalClose');
+
+    const ribbonClass = { active:'ribbon--active', beta:'ribbon--beta', planning:'ribbon--planning', upcoming:'ribbon--upcoming' };
+
+    cards.forEach((card) => {
+      card.addEventListener('click', () => {
+        if (moved) return;
+        const mediaEl = card.querySelector('.project-card__media');
+        modalMedia.style.background = getComputedStyle(mediaEl).backgroundImage;
+        modalRibbon.className = 'project-card__ribbon ' + ribbonClass[card.dataset.ribbon];
+        modalRibbon.textContent = card.dataset.status;
+        modalTitle.textContent = card.dataset.title;
+        modalDesc.textContent = card.dataset.desc;
+        modalTags.innerHTML = card.dataset.tags.split(',').map(t => `<span class="modal__tag">${t}</span>`).join('');
+        modal.classList.add('open');
+      });
+    });
+    const closeModal = () => modal.classList.remove('open');
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    // 스크롤 인뷰 애니메이션
+    const revealTargets = [document.querySelector('.projects__head'), ...cards];
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const delay = el.classList.contains('project-card')
+            ? cards.indexOf(el) * 90
+            : 0;
+          setTimeout(() => el.classList.add('in-view'), delay);
+          io.unobserve(el);
+        }
+      });
+    }, { threshold: 0.2 });
+    revealTargets.forEach((el) => el && io.observe(el));
+
+    updateCardTransforms();
+  </script>
 
 </body>
 </html>
