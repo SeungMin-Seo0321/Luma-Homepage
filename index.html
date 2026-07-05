@@ -293,10 +293,11 @@
     font-size:11.5px; font-weight:700; color:#fff; letter-spacing:0.01em;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
   }
-  .ribbon--active{ background:var(--lilac-deep); }
-  .ribbon--beta{ background:#4f8fcf; }
+  .ribbon--beta{ background:#3b82f6; }
+  .ribbon--release{ background:#22a06b; }
+  .ribbon--progress{ background:#e2883c; }
   .ribbon--planning{ background:#8a8698; }
-  .ribbon--upcoming{ background:#d99a4e; }
+  .ribbon--upcoming{ background:var(--lilac-deep); }
 
   .project-card__body{
     padding:26px 26px 30px;
@@ -466,8 +467,8 @@
     </div>
 
     <div class="projects__track" id="track">
-      <article class="project-card p1" data-title="Luma Division" data-desc="루마 디비전(Luma Division)은 복잡하고 고도화된 기술을 바탕으로 세상에 필요한 인공지능(AI)을 직접 설계하고 빌드하는 AI 개발 프로젝트입니다." data-tags="Luma,Ai" data-status="베타" data-ribbon="active">
-        <div class="project-card__ribbon ribbon--active">베타</div>
+      <article class="project-card p1" data-title="Luma Division" data-desc="루마 디비전(Luma Division)은 복잡하고 고도화된 기술을 바탕으로 세상에 필요한 인공지능(AI)을 직접 설계하고 빌드하는 AI 개발 프로젝트입니다." data-tags="Luma,Ai" data-status="베타" data-ribbon="beta">
+        <div class="project-card__ribbon ribbon--beta">베타</div>
         <div class="project-card__inner">
           <div class="project-card__media"></div>
           <div class="project-card__body">
@@ -510,8 +511,8 @@
           </div>
         </div>
       </article>
-      <article class="project-card p5" data-title="Nimbus API" data-desc="외부 서비스와 자유롭게 연결할 수 있는 오픈 API 프로젝트입니다." data-tags="개발자,API" data-status="진행중" data-ribbon="active">
-        <div class="project-card__ribbon ribbon--active">진행중</div>
+      <article class="project-card p5" data-title="Nimbus API" data-desc="외부 서비스와 자유롭게 연결할 수 있는 오픈 API 프로젝트입니다." data-tags="개발자,API" data-status="진행중" data-ribbon="progress">
+        <div class="project-card__ribbon ribbon--progress">진행중</div>
         <div class="project-card__inner">
           <div class="project-card__media"></div>
           <div class="project-card__body">
@@ -709,7 +710,7 @@
         const modalClose = document.getElementById('modalClose');
 
         if (modal && modalMedia && modalRibbon && modalTitle && modalDesc && modalTags && modalClose) {
-          const ribbonClass = { active:'ribbon--active', beta:'ribbon--beta', planning:'ribbon--planning', upcoming:'ribbon--upcoming' };
+          const ribbonClass = { beta:'ribbon--beta', release:'ribbon--release', progress:'ribbon--progress', planning:'ribbon--planning', upcoming:'ribbon--upcoming' };
 
           cards.forEach((card) => {
             card.addEventListener('click', () => {
