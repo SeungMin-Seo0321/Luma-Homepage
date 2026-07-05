@@ -176,15 +176,6 @@
     font-size:16px; line-height:1.8; color:var(--ink-soft);
     max-width:460px;
   }
-  .about__stats{
-    display:flex; gap:40px; margin-top:40px;
-  }
-  .about__stat b{
-    display:block; font-size:28px; font-weight:800; color:var(--ink);
-  }
-  .about__stat span{
-    font-size:13px; color:var(--ink-soft);
-  }
 
   .about__video{
     position:relative;
@@ -380,7 +371,6 @@
     .about__wrap{ padding:0 24px; grid-template-columns:1fr; gap:36px; }
     .about__video{ order:-1; }
     .about__video-square{ width:100%; }
-    .about__stats{ gap:28px; flex-wrap:wrap; }
     .projects{ padding:90px 0 90px; }
     .projects__head{ padding:0 24px; flex-direction:column; align-items:flex-start; gap:20px; }
     .projects__track{ padding:20px 24px 30px; }
@@ -428,6 +418,11 @@
 
   <section class="about" id="about">
     <div class="about__wrap">
+      <div class="about__video">
+        <div class="about__video-square">
+          <img src="assets/about-preview.png" alt="About Nimbus">
+        </div>
+      </div>
       <div class="about__text">
 
         <h2 class="about__heading">우리에게 아이디어는<br>무엇이든 될 수 <span class="over">있어요</span></h2>
@@ -436,16 +431,11 @@
           AI, 웹, 모바일, 인프라를 가리지 않고 아이디어가 가진 가능성을 끝까지 밀어붙이는 것,
           그것이 저희가 일하는 방식입니다.
         </p>
-        <div class="about__stats">
-          <div class="about__stat"><b>12+</b><span>진행 프로젝트</span></div>
-          <div class="about__stat"><b>5</b><span>연차</span></div>
-          <div class="about__stat"><b>30+</b><span>협업 클라이언트</span></div>
-        </div>
-      </div>
-      <div class="about__video">
-        <div class="about__video-square">
-          <img src="assets/about-preview.png" alt="About Nimbus">
-        </div>
+        <p class="about__desc">
+          기획부터 디자인, 개발, 운영까지 하나의 팀이 함께 움직이기 때문에
+          아이디어가 흐려지지 않고 처음의 의도 그대로 완성됩니다.
+          작은 프로젝트든 복잡한 서비스든, 저희는 같은 태도로 몰입합니다.
+        </p>
       </div>
     </div>
   </section>
@@ -605,9 +595,6 @@
         heroVideo.addEventListener('error', () => { heroVideo.style.display = 'none'; });
       }
       const aboutImgEl = document.querySelector('.about__video img');
-      if (aboutImgEl) {
-        aboutImgEl.addEventListener('error', () => { aboutImgEl.closest('.about__video').style.display = 'none'; });
-      }
     } catch (err) { console.error('hero video error:', err); }
 
     // ---------------------------------------------------------------
