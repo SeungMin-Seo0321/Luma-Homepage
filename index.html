@@ -52,6 +52,14 @@
     padding:32px 48px;
     animation:fadeIn .8s ease .1s both;
   }
+  .nav__brand{
+    display:flex; align-items:center; gap:10px;
+  }
+  .nav__logo-img{
+    height:26px; width:auto;
+    display:block;
+    filter:brightness(0);
+  }
   .nav__logo{
     font-weight:800; font-size:18px; letter-spacing:-0.02em;
     color:var(--ink);
@@ -79,11 +87,22 @@
     position:relative;
     overflow:hidden;
     height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
   }
-  .hero__video video{
+  .hero__video-square{
+    position:relative;
+    width:118%;
+    aspect-ratio:1 / 1;
+    overflow:hidden;
+    flex-shrink:0;
+  }
+  .hero__video-square video{
     position:absolute; inset:0;
     width:100%; height:100%;
     object-fit:cover;
+    object-position:center;
   }
 
   /* ---------- 텍스트 레이어: 영상보다 위, 오른쪽으로 자연스럽게 겹침 ---------- */
@@ -124,6 +143,70 @@
   .btn--primary:hover{ background:var(--lilac-deep); transform:translateY(-3px); }
   .btn--ghost{ background:var(--white); color:var(--ink); }
   .btn--ghost:hover{ color:var(--lilac-deep); transform:translateY(-3px); }
+
+  /* ---------- 소개(About) ---------- */
+  .about{
+    background:#e1e0e6;
+    padding:130px 0 150px;
+  }
+  .about__wrap{
+    max-width:1400px; margin:0 auto;
+    padding:0 80px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:64px;
+    align-items:center;
+  }
+  .about__text{
+    opacity:0; transform:translateY(24px);
+  }
+  .about__text.in-view{ animation:fadeUp .8s ease both; }
+  .about__label{
+    font-size:13px; font-weight:700; letter-spacing:0.08em;
+    color:var(--lilac-deep); text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .about__heading{
+    font-size:clamp(28px, 3.4vw, 44px);
+    font-weight:500; line-height:1.32; letter-spacing:-0.03em;
+  }
+  .about__heading .over{ font-weight:800; color:var(--lilac-deep); }
+  .about__desc{
+    margin-top:24px;
+    font-size:16px; line-height:1.8; color:var(--ink-soft);
+    max-width:460px;
+  }
+  .about__stats{
+    display:flex; gap:40px; margin-top:40px;
+  }
+  .about__stat b{
+    display:block; font-size:28px; font-weight:800; color:var(--ink);
+  }
+  .about__stat span{
+    font-size:13px; color:var(--ink-soft);
+  }
+
+  .about__video{
+    position:relative;
+    opacity:0; transform:translateY(24px);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .about__video.in-view{ animation:fadeUp .9s ease .12s both; }
+  .about__video-square{
+    position:relative;
+    width:112%;
+    aspect-ratio:1 / 1;
+    border-radius:28px;
+    overflow:hidden;
+    background:#dcdcdc;
+    flex-shrink:0;
+  }
+  .about__video-square video{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    object-position:center;
+  }
 
   /* ---------- 진행중인 프로젝트 캐러셀 ---------- */
   .projects{
@@ -293,6 +376,11 @@
     .content{ padding:0 28px; align-items:flex-start; padding-top:110px; }
     .content__inner{ width:100%; }
     .nav{ padding:22px 24px; }
+    .about{ padding:90px 0 100px; }
+    .about__wrap{ padding:0 24px; grid-template-columns:1fr; gap:36px; }
+    .about__video{ order:-1; }
+    .about__video-square{ width:100%; }
+    .about__stats{ gap:28px; flex-wrap:wrap; }
     .projects{ padding:90px 0 90px; }
     .projects__head{ padding:0 24px; flex-direction:column; align-items:flex-start; gap:20px; }
     .projects__track{ padding:20px 24px 30px; }
@@ -308,15 +396,20 @@
 
   <section class="hero">
     <nav class="nav">
-      <div class="nav__logo">Nimbus</div>
+      <div class="nav__brand">
+        <img src="assets/logo.png" alt="Nimbus 로고" class="nav__logo-img">
+        <div class="nav__logo">Nimbus</div>
+      </div>
       <a href="#footer" class="nav__cta">문의하기</a>
     </nav>
 
     <div class="hero__bg"></div>
     <div class="hero__video">
-      <video id="heroVideo" autoplay muted loop playsinline preload="auto">
-        <source src="assets/project-preview.mp4" type="video/mp4">
-      </video>
+      <div class="hero__video-square">
+        <video id="heroVideo" autoplay muted loop playsinline preload="auto">
+          <source src="assets/project-preview.mp4" type="video/mp4">
+        </video>
+      </div>
     </div>
 
     <div class="content">
@@ -328,6 +421,32 @@
         <div class="actions">
           <a href="#" class="btn btn--primary">프로젝트 협업</a>
           <a href="#footer" class="btn btn--ghost">프로젝트</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="about__wrap">
+      <div class="about__text">
+
+        <h2 class="about__heading">우리에게 아이디어는<br>무엇이든 될 수 <span class="over">있어요</span></h2>
+        <p class="about__desc">
+          막연한 상상도, 복잡하게 얽힌 요구사항도 Nimbus를 거치면 명확한 형태를 갖춥니다.
+          AI, 웹, 모바일, 인프라를 가리지 않고 아이디어가 가진 가능성을 끝까지 밀어붙이는 것,
+          그것이 저희가 일하는 방식입니다.
+        </p>
+        <div class="about__stats">
+          <div class="about__stat"><b>12+</b><span>진행 프로젝트</span></div>
+          <div class="about__stat"><b>5</b><span>연차</span></div>
+          <div class="about__stat"><b>30+</b><span>협업 클라이언트</span></div>
+        </div>
+      </div>
+      <div class="about__video">
+        <div class="about__video-square">
+          <video autoplay muted loop playsinline preload="auto">
+            <source src="assets/about-preview.mp4" type="video/mp4">
+          </video>
         </div>
       </div>
     </div>
@@ -436,9 +555,14 @@
         const projectsSection = document.getElementById('projects');
         const projectsHead = document.querySelector('.projects__head');
         const cardEls = Array.from(document.querySelectorAll('.project-card'));
+        const aboutSection = document.getElementById('about');
+        const aboutText = document.querySelector('.about__text');
+        const aboutVideo = document.querySelector('.about__video');
         const showAll = () => {
           if (projectsHead) projectsHead.classList.add('in-view');
           cardEls.forEach((card) => card.classList.add('in-view'));
+          if (aboutText) aboutText.classList.add('in-view');
+          if (aboutVideo) aboutVideo.classList.add('in-view');
         };
         if (projectsSection && 'IntersectionObserver' in window) {
           const io = new IntersectionObserver((entries, obs) => {
@@ -453,11 +577,23 @@
         } else {
           showAll();
         }
+        if (aboutSection && 'IntersectionObserver' in window) {
+          const ioAbout = new IntersectionObserver((entries, obs) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                if (aboutText) aboutText.classList.add('in-view');
+                if (aboutVideo) aboutVideo.classList.add('in-view');
+                obs.disconnect();
+              }
+            });
+          }, { threshold: 0.2 });
+          ioAbout.observe(aboutSection);
+        }
         // 안전장치: 무슨 이유로든 위 로직이 발동하지 않으면 2초 뒤 강제로 노출
         setTimeout(showAll, 2000);
       } catch (err) {
         // 노출 로직이 깨져도 최소한 화면엔 보이도록 강제 처리
-        document.querySelectorAll('.projects__head, .project-card').forEach((el) => el.classList.add('in-view'));
+        document.querySelectorAll('.projects__head, .project-card, .about__text, .about__video').forEach((el) => el.classList.add('in-view'));
         console.error('reveal error:', err);
       }
     })();
@@ -469,6 +605,10 @@
       const heroVideo = document.getElementById('heroVideo');
       if (heroVideo) {
         heroVideo.addEventListener('error', () => { heroVideo.style.display = 'none'; });
+      }
+      const aboutVideoEl = document.querySelector('.about__video video');
+      if (aboutVideoEl) {
+        aboutVideoEl.addEventListener('error', () => { aboutVideoEl.closest('.about__video').style.display = 'none'; });
       }
     } catch (err) { console.error('hero video error:', err); }
 
@@ -482,10 +622,9 @@
       const nextBtn = document.getElementById('nextBtn');
 
       if (track && cards.length) {
-        // 기본 스크롤 위치를 카드 중간쯤으로 지정
+        // 기본 스크롤 위치는 첫 카드부터 시작
         function setDefaultScroll(){
-          const maxScroll = track.scrollWidth - track.clientWidth;
-          track.scrollLeft = maxScroll / 2;
+          track.scrollLeft = 0;
         }
         setDefaultScroll();
         window.addEventListener('load', setDefaultScroll);
